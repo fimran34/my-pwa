@@ -32,6 +32,17 @@ npm run build
 yarn build
 ```
 
+### `Additional things to install`
+
+```
+
+npm install ajv
+npm install react react-dom react-router-dom
+npm install better-sqlite3
+npm install strapi-plugin-io
+
+```
+
 ## ⚙️ Deployment
 
 Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
