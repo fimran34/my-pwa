@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="/cartstyle.css">
+</head>
+<body>
+  <h1>Shopping Cart</h1>
+  <ul id="cartList">
+    <!-- Cart items will be dynamically loaded here -->
+  </ul>
+  <button class="home-button" onclick="window.location.href = '/'">Go to Home</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartList = document.getElementById('cartList');
+
+      if (cart.length === 0) {
+        cartList.innerHTML = '<li id="emptyCartMessage">No items in the cart</li>';
+        return;
+      }
+
+      cart.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+          <img src="${item.imageUrl || 'https://via.placeholder.com/150'}" alt="${item.title || 'No Title'}" />
+          <div>
+            <h2>${item.title || 'No Title'}</h2>
+            <p>Price: $${item.price || 'N/A'}</p>
+            <button class="button" onclick="window.removeFromCart(${item.id})">Remove from Cart</button>
+          </div>
+        `;
+        cartList.appendChild(listItem);
+      });
+    });
+
+    // Attach function to global window object
+    window.removeFromCart = function(productId) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => item.id !== productId);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      location.reload(); // Reload the page to update the UI
+    };
+  </script>
+</body>
+</html>

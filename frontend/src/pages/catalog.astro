@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Catalog</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+</head>
+<body>
+  <header>
+    <h1>Product Catalog</h1>
+    <a class="header-link" href="/login">Login</a>
+    <a class="header-link" href="/register">Register</a>
+    <div id="cart" onclick="window.location.href='/cart';">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cartCount">0</span>
+    </div>
+  </header>
+  
+  <ul id="productList">
+    <!-- Products will be dynamically loaded here -->
+  </ul>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('http://localhost:1337/api/products?populate=*');
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        console.log('Data:', data);
+
+        const products = data.data;
+
+        if (Array.isArray(products)) {
+          const productList = document.getElementById('productList');
+          products.forEach(product => {
+            const { attributes, id } = product;
+
+            const baseURL = 'http://localhost:1337';
+            const imageUrl = baseURL + attributes.Image.data[0].attributes.url;
+
+            console.log('Image URL:', imageUrl);
+
+            const listItem = document.createElement('li');
+            listItem.className = 'product-card';
+
+            const buttonClass = isInCart(id) ? 'remove-button in-cart' : 'add-button';
+            const buttonText = isInCart(id) ? 'Remove from Cart' : 'Add to Cart';
+
+            listItem.innerHTML = `
+              <h2>${attributes.Title || 'No Title'}</h2>
+              <img src="${imageUrl}" alt="${attributes.Title || 'No Title'}" />
+              <p>Price: $${attributes.Price || 'N/A'}</p>
+              <button class="${buttonClass}" data-id="${id}" onclick="window.toggleCart(this, ${id}, '${attributes.Title}', '${imageUrl}', ${attributes.Price})">${buttonText}</button>
+            `;
+            productList.appendChild(listItem);
+          });
+        } else {
+          console.error('Expected an array but got:', products);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+
+    window.isInCart = function(productId) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      return cart.some(item => item.id === productId);
+    };
+
+    window.toggleCart = function(button, productId, title, imageUrl, price) {
+      if (window.isInCart(productId)) {
+        window.removeFromCart(productId);
+        button.classList.remove('in-cart', 'remove-button');
+        button.classList.add('add-button');
+        button.textContent = 'Add to Cart';
+      } else {
+        window.addToCart({ id: productId, title, imageUrl, price });
+        button.classList.remove('add-button');
+        button.classList.add('in-cart', 'remove-button');
+        button.textContent = 'Remove from Cart';
+      }
+    };
+
+    window.updateCartCount = function() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      document.getElementById('cartCount').textContent = cart.length;
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.updateCartCount();
+    });
+
+    window.addToCart = function(product) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push(product);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      console.log('Product added to cart');
+      window.updateCartCount();
+    };
+
+    window.removeFromCart = function(productId) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => item.id !== productId);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      console.log('Product removed from cart');
+      window.updateCartCount();
+    };
+  </script>
+</body>
+</html>

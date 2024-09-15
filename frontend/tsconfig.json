@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",  // Required for resolveJsonModule
+    "resolveJsonModule": true,   // Allows importing JSON modules
+    "jsx": "react-jsxdev",          // Or "react-jsxdev" if using React 18+
+    "strict": true,
+    "esModuleInterop": true
+  }
+}
