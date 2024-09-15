@@ -36,11 +36,22 @@ All commands are run from the root of the project, from a terminal:
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
 | `npm install`             | Installs dependencies                            |
+| `npm install node@18.17.1 | To make astro project work, use this version     |
+| `npm install @astro/check |
+| `npm install @astro/react | for react
+| `npm install @types/node  |
+| `npm install axios        | for API server
+| `npm install json-server  | for also API
+| `npm install node-fetch   |
+| `npm install undici       |
+| `npm install react        |
+| `npm install react-dom    |
 | `npm run dev`             | Starts local dev server at `localhost:4321`      |
 | `npm run build`           | Build your production site to `./dist/`          |
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| `npm run astro -- --help` | Get help using the Astro CLI      
+
 
 ## 👀 Want to learn more?
 
